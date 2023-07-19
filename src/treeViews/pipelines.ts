@@ -1,10 +1,12 @@
 import * as vscode from "vscode";
 import { getCodePipeline } from "../api/api";
 import { PipelineNode } from "./pipelineNode";
+import { PipelineStageNode } from "./pipelineStageNode";
+import { PipelineActionNode } from "./pipelineActionNode";
 
 
 
-type PipelinesTreeNode = PipelineNode;
+type PipelinesTreeNode = PipelineNode | PipelineStageNode | PipelineActionNode
 
 
 export class PipelineTreeProvider implements vscode.TreeDataProvider<PipelinesTreeNode> {
@@ -16,12 +18,10 @@ export class PipelineTreeProvider implements vscode.TreeDataProvider<PipelinesTr
     if(!element){
       try {
         const pipelines = await getCodePipeline();
+        console.log(pipelines)
+
         if(pipelines?.pipelines && pipelines.pipelines.length > 0){
-          return pipelines.pipelines.map((pipeline, index) => new PipelineNode(pipeline?.name ?? `${index}`, vscode.TreeItemCollapsibleState.None, {
-            command: 'openPipeline',
-            title: '',
-            arguments: [pipeline.name],
-          }));
+          return pipelines.pipelines.map((pipeline, index) => new PipelineNode(pipeline?.name ?? `${index}`, vscode.TreeItemCollapsibleState.Collapsed));
         }
         return [];
       }
@@ -29,6 +29,11 @@ export class PipelineTreeProvider implements vscode.TreeDataProvider<PipelinesTr
         console.error(err);
         return [];
       }
+    }
+    if(element instanceof PipelineNode){
+      return element.getPipelineStageNode();
+    } else if (element instanceof PipelineStageNode){
+      return element.getPipelineActionNode();
     }
     return [];
   }

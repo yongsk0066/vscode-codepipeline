@@ -29,8 +29,7 @@
         {
           "id": "pipeline-list",
           "name": "파이프라인 뷰어",
-          "icon": "media/logo.svg",
-          "contextualTitle": "Case Generator"
+          "icon": "media/logo.svg"
         }
       ]
     },
@@ -40,11 +39,21 @@
         "title": "Hello World"
       },
       {
-        "command": "openPipeline",
-        "title": "Your Command",
-        "category": "Your Category"
+        "command": "pipeline.open",
+        "category": "codePipeline",
+        "title": "Open pipeline console",
+        "icon": "$(globe)"
       }
-    ]
+    ],
+    "menus":{
+      "view/item/context": [
+        {
+          "command": "pipeline.open",
+          "group": "inline",
+          "when": "viewItem =~ /pipeline/"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run package",

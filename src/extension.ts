@@ -1,15 +1,17 @@
 import * as vscode from 'vscode';
 import { initTreeViews } from './treeViews/treeViews';
 
+import { initResources } from './treeViews/icons';
+import { registerOpenPipeline } from './commands/openPipeline';
+
 
 export async function activate(context: vscode.ExtensionContext) {
-	 await initTreeViews(context);
+  initResources(context);
+	
+	await initTreeViews(context);
 
-	let disposable = vscode.commands.registerCommand("openPipeline", (label: string) => {
-			vscode.env.openExternal(vscode.Uri.parse(`https://ap-northeast-1.console.aws.amazon.com/codesuite/codepipeline/pipelines/${label}/view?region=ap-northeast-1`));
-	});
+	registerOpenPipeline(context);
 
- 	context.subscriptions.push(disposable);
 }
 
 export function deactivate() {}
